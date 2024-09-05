@@ -11,7 +11,7 @@ class Practica {
   
   public static void main(String[] args) {
     
-    int n = 240000 ; // Variable para controlar el número de palabras a ordenar
+    int n = 10000 ; // Variable para controlar el número de palabras a ordenar
     String[] palabras = crearArreglo("palabras.txt", n); //Se crea el arreglo que contendrá las palabras extraídas del archivo de texto
 
     double tiempoInicialBubble = System.nanoTime();  //Con la ayuda del método nanoTime se mide el tiempo de ejecución
