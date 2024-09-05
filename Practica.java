@@ -4,12 +4,14 @@
 
 import java.io.File;     
 import java.util.Scanner;  //Se importan las librerías io.File y Scanner para leer fácilmente el archivo de texto
+import java.util.ArrayList;
+import java.util.List;
 
 class Practica {
   
   public static void main(String[] args) {
     
-    int n = 10000 ; // Variable para controlar el número de palabras a ordenar
+    int n = 240000 ; // Variable para controlar el número de palabras a ordenar
     String[] palabras = crearArreglo("palabras.txt", n); //Se crea el arreglo que contendrá las palabras extraídas del archivo de texto
 
     double tiempoInicialBubble = System.nanoTime();  //Con la ayuda del método nanoTime se mide el tiempo de ejecución
@@ -70,33 +72,51 @@ class Practica {
       }
     }
   }
-  public static void bucketSort(String[] arreglo, int n) { //Función que ordena las palabras mediante el algoritmo BucketSort
+  public static void insertionSort(List<String> bucket, int n) {
 
-    String[][] buckets = new String[n][n];
-    int[] bucketSizes = new int[n];
-    for (int i = 0; i < n; i++) {
-      int bucketIndex = arreglo[i].charAt(0) % n; 
-      if (bucketIndex < 0) bucketIndex += n;
-      buckets[bucketIndex][bucketSizes[bucketIndex]++] = arreglo[i];
-    }
-    
-    int index = 0;
-    for (int i = 0; i < n; i++) {
-      for (int j = 1; j < bucketSizes[i]; j++) {
-        String key = buckets[i][j];
-        int k = j - 1;
-        while (k >= 0 && buckets[i][k].compareTo(key) > 0) {
-          buckets[i][k + 1] = buckets[i][k];
-          k--;
-        }
-        buckets[i][k + 1] = key;
+    for (int i = 1; i < n; ++i) {
+      String key = bucket.get(i);
+      int j = i - 1;
+
+      while (j >= 0 && bucket.get(j).compareTo(key) > 0) {
+        bucket.set(j + 1, bucket.get(j));
+        j--;
       }
-      
-      for (int j = 0; j < bucketSizes[i]; j++) {
-        arreglo[index++] = buckets[i][j];
-      }
+      bucket.set(j + 1, key);
     }
   }
+  public static void bucketSort(String[] arr, int n) {
+    
+    String min = arr[0];
+    String max = arr[0];
+
+    for (int i = 1; i < n; i++) {
+      if (arr[i].compareTo(min) < 0) min = arr[i];
+      if (arr[i].compareTo(max) > 0) max = arr[i];
+    }
+    
+    int bucketCount = (max.compareTo(min) + 1);
+    List<List<String>> buckets = new ArrayList<>(bucketCount);
+    
+    for (int i = 0; i < bucketCount; i++) {
+      buckets.add(new ArrayList<>());
+    }
+    
+    for (int i = 0; i < n; i++) {
+      String str = arr[i];
+      int bucketIndex = (str.compareTo(min));
+      buckets.get(bucketIndex).add(str);
+    }
+    int index = 0;
+
+    for (int i = 0; i < bucketCount; i++) {
+      List<String> bucket = buckets.get(i);
+      insertionSort(bucket, bucket.size());
+      for (int j = 0; j < bucket.size(); j++) {
+        arr[index++] = bucket.get(j);
+      }
+    }
+  } 
 }
 
 //Estructuras de Datos y Algoritmos II
